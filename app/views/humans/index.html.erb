@@ -1,0 +1,8 @@
+<h1>Yay successfully rendered this shiznat!<h1>
+<h2>Welcome <%= @me.fname %>  <%= @me.lname %>!</h2>
+<h3>Errors</h3>
+<ul>
+  <% flash.each do |err_type, err_msg| %>
+    <li><%= err_msg %></li>
+  <% end %>
+</ul>

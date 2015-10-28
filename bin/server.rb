@@ -1,32 +1,37 @@
 require 'webrick'
-require_relative '../lib/phase6/controller_base'
-require_relative '../lib/phase6/router'
-require_relative '../lib/bonus/flash'
+require 'byebug'
+
+require_relative "../config/controller_base/require_base_controller"
+require_relative "../config/model_base/sql_object"
 
 # http://www.ruby-doc.org/stdlib-2.0/libdoc/webrick/rdoc/WEBrick.html
 # http://www.ruby-doc.org/stdlib-2.0/libdoc/webrick/rdoc/WEBrick/HTTPRequest.html
 # http://www.ruby-doc.org/stdlib-2.0/libdoc/webrick/rdoc/WEBrick/HTTPResponse.html
 # http://www.ruby-doc.org/stdlib-2.0/libdoc/webrick/rdoc/WEBrick/Cookie.html
 
-class UsersController < Phase6::ControllerBase
+class HumansController < ControllerBase
   def index
-    render(:new)
+    @me = Human.new(fname: "Ephraim", lname: "Pei")
+
+    flash[:failure] = "FAILURE"
+
+    render(:index)
   end
 end
 
-router = Phase6::Router.new
+class Human < SQLObject
+end
+
+router = Router.new
 
 # create routes
 router.draw do
-  get Regexp.new("/users/"), UsersController, :index
+  get Regexp.new("/humans/"), HumansController, :index
 end
-
-p router.routes
 
 server = WEBrick::HTTPServer.new(:Port => 3000)
 
 server.mount_proc("/") do |req, res|
-  p req.path
   route = router.run(req, res)
 end
 
